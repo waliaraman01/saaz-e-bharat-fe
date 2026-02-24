@@ -414,7 +414,7 @@ function RegistrationsAdmin() {
                                                     </div>
                                                 ) : (
                                                     <img
-                                                        src={`${backendUrl.replace('/api', '')}${selectedRegistration.documentUrl}`}
+                                                        src={selectedRegistration.documentUrl.startsWith('data:') ? selectedRegistration.documentUrl : `${backendUrl.replace('/api', '')}${selectedRegistration.documentUrl}`}
                                                         alt="ID Proof"
                                                         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                                                         onError={(e: any) => e.target.src = 'https://placehold.co/400x300?text=Identity+Proof'}
@@ -429,7 +429,7 @@ function RegistrationsAdmin() {
                                                 </p>
                                                 <div style={{ display: 'flex', gap: '1rem' }}>
                                                     <a
-                                                        href={`${backendUrl.replace('/api', '')}${selectedRegistration.documentUrl}`}
+                                                        href={selectedRegistration.documentUrl.startsWith('data:') ? selectedRegistration.documentUrl : `${backendUrl.replace('/api', '')}${selectedRegistration.documentUrl}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         style={{ padding: '0.8rem 1.5rem', background: 'white', color: '#1E293B', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '8px' }}

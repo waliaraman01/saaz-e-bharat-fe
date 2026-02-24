@@ -72,7 +72,7 @@ export default function ContentCMS() {
 
     const getFullUrl = (path: string) => {
         if (!path) return '';
-        if (path.startsWith('http')) return path;
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
         // Ensure path starts with a slash
         const normalizedPath = path.startsWith('/') ? path : `/${path}`;
         return `${storageUrl}${normalizedPath}`;

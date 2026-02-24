@@ -54,7 +54,7 @@ export default function Home() {
 
   const getFullUrl = (path: string) => {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     return `${storageUrl}${normalizedPath}`;
   };
@@ -701,7 +701,7 @@ export default function Home() {
     </main>
   );
 }
-   
+
 
 
 
