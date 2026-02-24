@@ -17,7 +17,7 @@ function RegisterFallback() {
             `}</style>
         </div>
     );
-}
+}      
 
 export default function Register() {
     return (
@@ -26,3 +26,7 @@ export default function Register() {
         </Suspense>
     );
 }
+
+
+
+
