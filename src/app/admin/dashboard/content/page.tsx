@@ -298,6 +298,20 @@ export default function ContentCMS() {
                                         modified={isFieldModified('EMAIL_CONFIRM_BODY')}
                                         onChange={(v: any) => handleValueChange('EMAIL_CONFIRM_BODY', v, 'email_template')}
                                     />
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                        <InputField
+                                            label="Venue Address (Footer)"
+                                            value={findValue('EMAIL_VENUE_ADDRESS', 'Jawaharlal Nehru Stadium, Delhi 110003')}
+                                            modified={isFieldModified('EMAIL_VENUE_ADDRESS')}
+                                            onChange={(v: any) => handleValueChange('EMAIL_VENUE_ADDRESS', v, 'email_template')}
+                                        />
+                                        <InputField
+                                            label="Greeting Subtext (Placeholder: {venue})"
+                                            value={findValue('EMAIL_CONFIRM_GREETING', 'Your presence will add a vibrant thread to the rich tapestry of stories we aim to tell at {venue}.')}
+                                            modified={isFieldModified('EMAIL_CONFIRM_GREETING')}
+                                            onChange={(v: any) => handleValueChange('EMAIL_CONFIRM_GREETING', v, 'email_template')}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

@@ -169,9 +169,8 @@ export default function Home() {
       <div style={{ paddingTop: 'var(--nav-height)' }}>
         {/* Hero Section */}
         {isEnabled('hero_enabled') && (
-          <section style={{
+          <section className="hero-section" style={{
             position: 'relative',
-            minHeight: 'calc(100vh - var(--nav-height))',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -374,7 +373,7 @@ export default function Home() {
           <section id="about" style={{ padding: 'var(--space-5) 0', background: 'white', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: `url('https://www.transparenttextures.com/patterns/natural-paper.png')`, pointerEvents: 'none' }}></div>
 
-            <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 'calc(var(--space-5) * 1.5)', alignItems: 'center', position: 'relative', zIndex: 1 }}>
+            <div className="container about-grid-container" style={{ display: 'grid', alignItems: 'center', position: 'relative', zIndex: 1 }}>
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -714,6 +713,12 @@ export default function Home() {
         @media (max-width: 768px) {
           .md-flex { display: none; }
           .md-hidden { display: block; }
+          .hero-section { min-height: auto; padding-bottom: calc(var(--space-5) * 3) !important; }
+          .about-grid-container { grid-template-columns: 1fr !important; gap: var(--space-5) !important; }
+        }
+        @media (min-width: 769px) {
+          .hero-section { min-height: calc(100vh - var(--nav-height)); }
+          .about-grid-container { grid-template-columns: 1.2fr 0.8fr; gap: calc(var(--space-5) * 1.5); }
         }
       `}</style>
     </main>
