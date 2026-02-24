@@ -28,7 +28,8 @@ export default function Home() {
   }, []);
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.saaz-e-bharat.com/api';
-  const storageUrl = backendUrl.replace('/api', '');
+  // Use a more robust way to get the base URL without /api at the end
+  const storageUrl = backendUrl.endsWith('/api') ? backendUrl.slice(0, -4) : backendUrl.replace(/\/api\/$/, '/').replace(/\/api$/, '');
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -55,7 +56,24 @@ export default function Home() {
   const getFullUrl = (path: string) => {
     if (!path) return '';
     if (path.startsWith('http') || path.startsWith('data:')) return path;
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+    // Clean the path: remove redundant domain names or dots if they exist at the start
+    let cleanPath = path;
+    const domainVariants = [
+      '.saaz-e-bharat.com',
+      'saaz-e-bharat.com',
+      'www.saaz-e-bharat.com',
+      'api.saaz-e-bharat.com'
+    ];
+
+    for (const variant of domainVariants) {
+      if (cleanPath.startsWith(variant)) {
+        cleanPath = cleanPath.replace(variant, '');
+        break;
+      }
+    }
+
+    const normalizedPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
     return `${storageUrl}${normalizedPath}`;
   };
 

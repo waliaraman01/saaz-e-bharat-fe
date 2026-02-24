@@ -42,6 +42,7 @@ function RegistrationsAdmin() {
     const [exportLoading, setExportLoading] = useState(false);
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.saaz-e-bharat.com/api';
+    const storageUrl = backendUrl.endsWith('/api') ? backendUrl.slice(0, -4) : backendUrl.replace(/\/api\/$/, '/').replace(/\/api$/, '');
 
     const fetchData = async () => {
         setLoading(true);
@@ -414,7 +415,25 @@ function RegistrationsAdmin() {
                                                     </div>
                                                 ) : (
                                                     <img
-                                                        src={selectedRegistration.documentUrl.startsWith('data:') ? selectedRegistration.documentUrl : `${backendUrl.replace('/api', '')}${selectedRegistration.documentUrl}`}
+                                                        src={(() => {
+                                                            if (selectedRegistration.documentUrl.startsWith('data:')) return selectedRegistration.documentUrl;
+                                                            let cleanPath = selectedRegistration.documentUrl;
+                                                            const domainVariants = [
+                                                                '.saaz-e-bharat.com',
+                                                                'saaz-e-bharat.com',
+                                                                'www.saaz-e-bharat.com',
+                                                                'api.saaz-e-bharat.com'
+                                                            ];
+
+                                                            for (const variant of domainVariants) {
+                                                                if (cleanPath.startsWith(variant)) {
+                                                                    cleanPath = cleanPath.replace(variant, '');
+                                                                    break;
+                                                                }
+                                                            }
+                                                            const normalizedPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+                                                            return `${storageUrl}${normalizedPath}`;
+                                                        })()}
                                                         alt="ID Proof"
                                                         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                                                         onError={(e: any) => e.target.src = 'https://placehold.co/400x300?text=Identity+Proof'}
@@ -429,7 +448,25 @@ function RegistrationsAdmin() {
                                                 </p>
                                                 <div style={{ display: 'flex', gap: '1rem' }}>
                                                     <a
-                                                        href={selectedRegistration.documentUrl.startsWith('data:') ? selectedRegistration.documentUrl : `${backendUrl.replace('/api', '')}${selectedRegistration.documentUrl}`}
+                                                        href={(() => {
+                                                            if (selectedRegistration.documentUrl.startsWith('data:')) return selectedRegistration.documentUrl;
+                                                            let cleanPath = selectedRegistration.documentUrl;
+                                                            const domainVariants = [
+                                                                '.saaz-e-bharat.com',
+                                                                'saaz-e-bharat.com',
+                                                                'www.saaz-e-bharat.com',
+                                                                'api.saaz-e-bharat.com'
+                                                            ];
+
+                                                            for (const variant of domainVariants) {
+                                                                if (cleanPath.startsWith(variant)) {
+                                                                    cleanPath = cleanPath.replace(variant, '');
+                                                                    break;
+                                                                }
+                                                            }
+                                                            const normalizedPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+                                                            return `${storageUrl}${normalizedPath}`;
+                                                        })()}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         style={{ padding: '0.8rem 1.5rem', background: 'white', color: '#1E293B', borderRadius: '10px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '8px' }}
