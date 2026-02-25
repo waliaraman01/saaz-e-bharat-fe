@@ -144,28 +144,104 @@ export default function RegisterForm() {
 
     if (success) {
         return (
-            <div className="cultural-bg min-h-screen flex items-center justify-center p-4">
+            <div className="cultural-bg min-h-screen w-full flex items-center justify-center p-4">
                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
+                    initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     className="premium-card"
                     style={{
-                        textAlign: 'center',
-                        maxWidth: '500px',
+                        maxWidth: '650px',
                         width: '100%',
-                        padding: 'var(--space-5) var(--space-4)'
+                        padding: 'var(--space-5) var(--space-4)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                        borderRadius: '32px',
+                        boxShadow: '0 50px 100px -20px rgba(123, 36, 28, 0.12)',
+                        border: '1px solid #F1E4D1',
+                        background: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(20px)',
+                        position: 'relative',
+                        overflow: 'hidden'
                     }}
                 >
-                    <div style={{ width: '80px', height: '80px', background: '#ECFDF5', color: 'var(--success)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--space-4)' }}>
-                        <Check size={40} strokeWidth={3} />
-                    </div>
-                    <h2 style={{ color: 'var(--text)', marginBottom: 'var(--space-3)' }}>Application Sent!</h2>
-                    <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 'var(--space-5)' }}>
-                        Namaste! Your application for <strong>Saaz-e-Bharat</strong> has been received. Please check your email <strong>{formData.email}</strong> for confirmation.
+                    {/* Decorative Elements */}
+                    <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '250px', height: '250px', background: 'var(--secondary)', opacity: 0.03, borderRadius: '50%', filter: 'blur(60px)', pointerEvents: 'none' }}></div>
+                    <div style={{ position: 'absolute', bottom: '-100px', right: '-100px', width: '250px', height: '250px', background: 'var(--primary)', opacity: 0.03, borderRadius: '50%', filter: 'blur(60px)', pointerEvents: 'none' }}></div>
+
+                    {/* Status Badge */}
+                    <motion.div
+                        initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '10px 24px',
+                            background: '#FFFBEB',
+                            border: '1px solid #FEF3C7',
+                            borderRadius: '50px',
+                            color: '#92400E',
+                            fontWeight: 700,
+                            fontSize: '0.8rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1.5px',
+                            marginBottom: 'var(--space-4)',
+                            zIndex: 2
+                        }}
+                    >
+                        <span style={{ width: '8px', height: '8px', background: '#F59E0B', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 0 4px rgba(245, 158, 11, 0.2)' }}></span>
+                        Application Under Review
+                    </motion.div>
+
+                    <h2 style={{ color: 'var(--primary)', fontSize: 'clamp(2rem, 4vw, 2.8rem)', marginBottom: 'var(--space-3)', fontFamily: 'var(--font-playfair)', zIndex: 2 }}>
+                        Dhanyavad, {formData.fullName.split(' ')[0]}
+                    </h2>
+
+                    <div style={{ width: '60px', height: '3px', background: 'var(--secondary)', margin: '0 auto var(--space-4)', borderRadius: '2px', zIndex: 2 }}></div>
+
+                    <p style={{ color: '#4A3728', lineHeight: 1.8, fontSize: '1.1rem', maxWidth: '500px', margin: '0 auto var(--space-5)', opacity: 0.9, zIndex: 2 }}>
+                        Your registration for <strong>Saaz-e-Bharat 2026</strong> has been recorded successfully. Our team is now reviewing your application details and documents.
                     </p>
-                    <Link href="/">
-                        <button className="btn-primary" style={{ width: '100%' }}>Back to Home</button>
-                    </Link>
+
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: '20px',
+                        marginBottom: 'var(--space-5)',
+                        position: 'relative',
+                        zIndex: 2,
+                        width: '100%'
+                    }}>
+                        <div style={{ background: 'white', padding: '20px', borderRadius: '20px', border: '1px solid #F1E4D1', boxShadow: '0 10px 20px rgba(0,0,0,0.02)' }}>
+                            <div style={{ fontSize: '0.7rem', color: '#94A3B8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '1px' }}>Category</div>
+                            <div style={{ fontSize: '1.2rem', color: 'var(--primary)', fontWeight: 700 }}>{formData.category}</div>
+                        </div>
+                        <div style={{ background: 'white', padding: '20px', borderRadius: '20px', border: '1px solid #F1E4D1', boxShadow: '0 10px 20px rgba(0,0,0,0.02)' }}>
+                            <div style={{ fontSize: '0.7rem', color: '#94A3B8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '1px' }}>Next Update</div>
+                            <div style={{ fontSize: '1.1rem', color: '#4A3728', fontWeight: 600 }}>Within 48 Hours</div>
+                        </div>
+                    </div>
+
+                    <div style={{ borderTop: '1px solid #F1E4D1', paddingTop: 'var(--space-4)', marginBottom: 'var(--space-5)', zIndex: 2, width: '100%' }}>
+                        <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                            A confirmation email has been dispatched to <strong>{formData.email}</strong>. Once approved, your official entry pass will be issued digitally.
+                        </p>
+                    </div>
+
+                    <div style={{ zIndex: 2 }}>
+                        <Link href="/">
+                            <button className="btn-primary" style={{ width: 'auto', padding: '1rem 3rem', borderRadius: '50px', fontSize: '1rem', boxShadow: '0 15px 30px rgba(123, 36, 28, 0.2)' }}>
+                                Return to Homepage
+                            </button>
+                        </Link>
+                    </div>
+
+                    <p style={{ marginTop: 'var(--space-4)', color: '#94A3B8', fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.5px', zIndex: 2 }}>
+                        Saaz-e-Bharat 2026 • Jawaharlal Nehru Stadium • New Delhi
+                    </p>
                 </motion.div>
             </div>
         );

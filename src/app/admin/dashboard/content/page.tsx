@@ -312,6 +312,20 @@ export default function ContentCMS() {
                                             onChange={(v: any) => handleValueChange('EMAIL_CONFIRM_GREETING', v, 'email_template')}
                                         />
                                     </div>
+                                    <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#FEF9C3', borderRadius: '16px', border: '1px solid #FEF08A' }}>
+                                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#854D0E', fontWeight: 600 }}>
+                                            <strong>PRO MODE:</strong> Paste full HTML below to override the standard builder. Placeholders: <code>{'{name}'}, {'{category}'}, {'{venue}'}, {'{id}'}</code>
+                                        </p>
+                                        <div style={{ marginTop: '1rem' }}>
+                                            <TextAreaField
+                                                label="Full HTML Override (Optional)"
+                                                rows={10}
+                                                value={findValue('EMAIL_CONFIRM_FULL_HTML', '')}
+                                                modified={isFieldModified('EMAIL_CONFIRM_FULL_HTML')}
+                                                onChange={(v: any) => handleValueChange('EMAIL_CONFIRM_FULL_HTML', v, 'email_template')}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
