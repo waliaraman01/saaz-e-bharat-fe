@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Shield, Award, Users, Globe, Loader2, Leaf, Menu, X } from 'lucide-react';
+import { ArrowRight, Shield, Award, Users, Globe, Loader2, Leaf, Menu, X, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
 
@@ -17,6 +17,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [activeDayIndex, setActiveDayIndex] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -77,11 +79,17 @@ export default function Home() {
     return `${storageUrl}${normalizedPath}`;
   };
 
-  const heroImages = [
+  const rawHeroImages = [
     findValue('hero_image_1'),
     findValue('hero_image_2'),
     findValue('hero_image_3')
   ].filter(img => img && img !== '');
+
+  const heroImages = rawHeroImages.length > 0 ? rawHeroImages : [
+    'https://images.unsplash.com/photo-1514361892635-6b07e31e75f9?auto=format&fit=crop&q=80&w=1920',
+    'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&q=80&w=1920',
+    'https://images.unsplash.com/photo-1533174000228-db6298db51db?auto=format&fit=crop&q=80&w=1920'
+  ];
 
   const sliderSpeed = parseInt(findValue('hero_slider_speed', '5000'));
 
@@ -136,6 +144,135 @@ export default function Home() {
       </nav>
 
       {/* Mobile Menu */}
+      <AnimatePresence>
+        {isScheduleModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}
+            onClick={() => setIsScheduleModalOpen(false)}
+          >
+            <motion.div
+              className="modal-container"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: '#FDF5E6',
+                width: '100%',
+                maxWidth: '900px',
+                maxHeight: '85vh',
+                overflow: 'hidden',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              <div className="modal-header" style={{ borderBottom: '1px solid rgba(123, 36, 28, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#ffffff' }}>
+                <div>
+                  <h2 style={{ color: 'var(--primary)', fontFamily: 'var(--font-playfair)', fontSize: '2rem', fontWeight: 900, margin: 0 }}>Event Schedule</h2>
+                  <p style={{ color: 'var(--text-muted)', margin: '0.5rem 0 0 0', fontSize: '1.1rem' }}>Saaz-e-Bharat Experiential Itinerary</p>
+                </div>
+                <button 
+                  onClick={() => setIsScheduleModalOpen(false)}
+                  style={{ background: 'var(--bg)', border: 'none', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--primary)', transition: 'all 0.2s' }}
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              
+              <div className="modal-body" style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                {(() => {
+                  let scheduleArray = [];
+                  try {
+                     const scheduleStr = findValue('schedule_data', '[]');
+                     scheduleArray = JSON.parse(scheduleStr);
+                  } catch (e) {
+                     scheduleArray = [];
+                  }
+                  
+                  if (!Array.isArray(scheduleArray) || scheduleArray.length === 0) {
+                     return <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic' }}>Detailed schedule will be announced soon.</p>;
+                  }
+
+                  const safeIndex = activeDayIndex < scheduleArray.length ? activeDayIndex : 0;
+                  const activeDay = scheduleArray[safeIndex];
+
+                  return (
+                    <>
+                      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', borderBottom: '2px solid rgba(123, 36, 28, 0.1)', paddingBottom: '1rem' }}>
+                        {scheduleArray.map((dayObj: any, idx: number) => (
+                          <button
+                            key={idx}
+                            onClick={() => setActiveDayIndex(idx)}
+                            style={{
+                              padding: '0.8rem 1.5rem',
+                              borderRadius: '100px',
+                              border: 'none',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              fontSize: '0.95rem',
+                              transition: 'all 0.3s ease',
+                              background: safeIndex === idx ? 'var(--primary)' : 'rgba(123, 36, 28, 0.05)',
+                              color: safeIndex === idx ? 'white' : 'var(--primary)',
+                              boxShadow: safeIndex === idx ? '0 4px 12px rgba(123, 36, 28, 0.2)' : 'none'
+                            }}
+                          >
+                            {dayObj.day.split(' (')[0]}
+                          </button>
+                        ))}
+                      </div>
+
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={safeIndex}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div style={{ background: 'white', borderRadius: '20px', border: '1px solid rgba(123, 36, 28, 0.08)', overflow: 'hidden' }}>
+                            {activeDay.events.map((ev: any, evIdx: number) => (
+                              <div key={evIdx} className="schedule-row" style={{ 
+                                gap: '1rem', 
+                                borderBottom: evIdx === activeDay.events.length - 1 ? 'none' : '1px solid rgba(123, 36, 28, 0.08)',
+                                background: evIdx % 2 === 0 ? 'transparent' : 'rgba(253, 245, 230, 0.5)',
+                                alignItems: 'center'
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--secondary)', fontWeight: 700, fontSize: '0.95rem' }}>
+                                  <Clock size={16} />
+                                  {ev.time}
+                                </div>
+                                <div style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '1.05rem' }}>
+                                  {ev.title}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+                    </>
+                  );
+                })()}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -297,7 +434,7 @@ export default function Home() {
                   marginBottom: 'var(--space-4)',
                   lineHeight: 1.1,
                   color: 'var(--primary)',
-                  fontSize: 'clamp(3.5rem, 8vw, 6.5rem)',
+                  fontSize: 'clamp(2.5rem, 8vw, 6.5rem)',
                   fontFamily: 'var(--font-playfair)',
                   fontWeight: 900
                 }}
@@ -323,12 +460,45 @@ export default function Home() {
               </motion.p>
 
               <motion.div
+                className="hero-buttons-wrapper"
                 variants={{
                   hidden: { opacity: 0, scale: 0.9 },
                   visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } }
                 }}
-                style={{ display: 'flex', justifyContent: 'center' }}
+                style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}
               >
+                {isEnabled('schedule_enabled') && (
+                  <button 
+                    onClick={() => setIsScheduleModalOpen(true)}
+                    className="btn-outline" 
+                    style={{ 
+                      padding: '1rem 2.5rem', 
+                      fontSize: '1.2rem', 
+                      background: 'rgba(255, 255, 255, 0.8)',
+                      border: '2px solid var(--secondary)',
+                      color: 'var(--primary)',
+                      borderRadius: '50px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--secondary)';
+                      e.currentTarget.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)';
+                      e.currentTarget.style.color = 'var(--primary)';
+                    }}
+                  >
+                    <Calendar size={22} /> Know More
+                  </button>
+                )}
+                
                 <Link href="/join-the-celebration">
                   <button className="btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem', boxShadow: '0 10px 25px rgba(123, 36, 28, 0.3)' }}>
                     Join the Celebration <ArrowRight size={22} />
@@ -713,12 +883,6 @@ export default function Home() {
         @media (max-width: 768px) {
           .md-flex { display: none; }
           .md-hidden { display: block; }
-          .hero-section { min-height: auto; padding-bottom: calc(var(--space-5) * 3) !important; }
-          .about-grid-container { grid-template-columns: 1fr !important; gap: var(--space-5) !important; }
-        }
-        @media (min-width: 769px) {
-          .hero-section { min-height: calc(100vh - var(--nav-height)); }
-          .about-grid-container { grid-template-columns: 1.2fr 0.8fr; gap: calc(var(--space-5) * 1.5); }
         }
       `}</style>
     </main>

@@ -20,7 +20,10 @@ import {
     RefreshCcw,
     Zap,
     Clock,
-    Mail
+    Mail,
+    Calendar,
+    Plus,
+    Trash
 } from 'lucide-react';
 
 export default function ContentCMS() {
@@ -235,6 +238,11 @@ export default function ContentCMS() {
                         </div>
                         <TextAreaField label="Evocative Tagline" value={findValue('hero_tagline')} modified={isFieldModified('hero_tagline')} onChange={(v: any) => handleValueChange('hero_tagline', v, 'hero')} />
                     </div>
+                </SectionBlock>
+
+                {/* Event Schedule Section */}
+                <SectionBlock title="Event Schedule" icon={Calendar} enabledKey="schedule_enabled" section="hero" findValue={findValue} handleValueChange={handleValueChange}>
+                    <ScheduleManager value={findValue('schedule_data')} onChange={(v: any) => handleValueChange('schedule_data', v, 'hero')} />
                 </SectionBlock>
 
                 {/* Narrative (About) Section */}
@@ -468,6 +476,125 @@ function TextAreaField({ label, value, modified, onChange, rows = 4 }: any) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', width: '100%' }}>
             <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label} {modified && <span style={{ color: '#7B241C' }}>• Modified</span>}</label>
             <textarea rows={rows} value={value} onChange={(e) => onChange(e.target.value)} style={{ padding: '1.2rem', borderRadius: '16px', border: modified ? '2px solid #7B241C' : '1px solid #E2E8F0', background: '#F8FAFC', outline: 'none', resize: 'none', fontSize: '1rem', lineHeight: 1.6, color: '#475569' }} />
+        </div>
+    );
+}
+
+function ScheduleManager({ value, onChange }: any) {
+    const [schedule, setSchedule] = useState<any[]>([]);
+
+    useEffect(() => {
+        try {
+            if (value && typeof value === 'string') {
+                const parsed = JSON.parse(value);
+                if (Array.isArray(parsed)) {
+                    setSchedule(parsed);
+                }
+            } else if (Array.isArray(value)) {
+                setSchedule(value);
+            }
+        } catch (e) {
+            console.error('Failed to parse schedule JSON');
+        }
+    }, [value]);
+
+    const saveChanges = (newSchedule: any[]) => {
+        setSchedule(newSchedule);
+        onChange(JSON.stringify(newSchedule));
+    };
+
+    const addDay = () => {
+        const newSchedule = [...schedule, { day: 'New Day', events: [] }];
+        saveChanges(newSchedule);
+    };
+
+    const removeDay = (dayIndex: number) => {
+        const newSchedule = [...schedule];
+        newSchedule.splice(dayIndex, 1);
+        saveChanges(newSchedule);
+    };
+
+    const addEvent = (dayIndex: number) => {
+        const newSchedule = [...schedule];
+        newSchedule[dayIndex].events.push({ time: '', title: '' });
+        saveChanges(newSchedule);
+    };
+
+    const removeEvent = (dayIndex: number, eventIndex: number) => {
+        const newSchedule = [...schedule];
+        newSchedule[dayIndex].events.splice(eventIndex, 1);
+        saveChanges(newSchedule);
+    };
+
+    const updateDayTitle = (dayIndex: number, title: string) => {
+        const newSchedule = [...schedule];
+        newSchedule[dayIndex].day = title;
+        saveChanges(newSchedule);
+    };
+
+    const updateEvent = (dayIndex: number, eventIndex: number, field: string, val: string) => {
+        const newSchedule = [...schedule];
+        newSchedule[dayIndex].events[eventIndex][field] = val;
+        saveChanges(newSchedule);
+    };
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ background: '#F0F9FF', padding: '1.5rem', borderRadius: '16px', border: '1px solid #BAE6FD', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <Info size={24} color="#0284C7" />
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#0369A1', lineHeight: 1.5 }}>
+                    Manage the event schedule data which will appear in the tabular modal on the landing page when users click "Know More".
+                </p>
+            </div>
+
+            {schedule.map((dayObj, dIdx) => (
+                <div key={dIdx} style={{ padding: '1.5rem', background: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <input
+                            type="text"
+                            value={dayObj.day}
+                            onChange={(e) => updateDayTitle(dIdx, e.target.value)}
+                            style={{ padding: '0.8rem 1.2rem', borderRadius: '12px', border: '1px solid #CBD5E1', fontSize: '1.1rem', fontWeight: 'bold', width: '50%', color: '#1E293B' }}
+                            placeholder="Day Title e.g., Day 1 (OPEN FOR ALL)"
+                        />
+                        <button onClick={() => removeDay(dIdx)} style={{ background: '#FEF2F2', border: 'none', color: '#EF4444', padding: '0.6rem', borderRadius: '8px', cursor: 'pointer', display: 'flex' }}>
+                            <Trash size={18} />
+                        </button>
+                    </div>
+
+                    <div style={{ display: 'grid', gap: '0.8rem', marginTop: '1rem' }}>
+                        {dayObj.events.map((ev: any, eIdx: number) => (
+                            <div key={eIdx} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <input
+                                    type="text"
+                                    value={ev.time}
+                                    onChange={(e) => updateEvent(dIdx, eIdx, 'time', e.target.value)}
+                                    placeholder="Time e.g., 10:00 AM"
+                                    style={{ padding: '0.8rem', borderRadius: '8px', border: '1px solid #E2E8F0', width: '30%' }}
+                                />
+                                <input
+                                    type="text"
+                                    value={ev.title}
+                                    onChange={(e) => updateEvent(dIdx, eIdx, 'title', e.target.value)}
+                                    placeholder="Event Title"
+                                    style={{ padding: '0.8rem', borderRadius: '8px', border: '1px solid #E2E8F0', width: '60%' }}
+                                />
+                                <button onClick={() => removeEvent(dIdx, eIdx)} style={{ background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '0.5rem' }}>
+                                    <Trash size={16} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <button onClick={() => addEvent(dIdx)} style={{ alignSelf: 'flex-start', background: '#F1F5F9', border: 'border', padding: '0.6rem 1rem', borderRadius: '8px', color: '#475569', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '0.5rem' }}>
+                        <Plus size={16} /> Add Event slot
+                    </button>
+                </div>
+            ))}
+
+            <button onClick={addDay} style={{ padding: '1rem', borderRadius: '12px', border: '2px dashed #CBD5E1', background: 'transparent', color: '#64748B', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                <Plus size={20} /> Add New Day
+            </button>
         </div>
     );
 }

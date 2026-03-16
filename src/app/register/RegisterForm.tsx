@@ -240,7 +240,7 @@ export default function RegisterForm() {
                     </div>
 
                     <p style={{ marginTop: 'var(--space-4)', color: '#94A3B8', fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.5px', zIndex: 2 }}>
-                        Saaz-e-Bharat 2026 • Jawaharlal Nehru Stadium • New Delhi
+                        Saaz-e-Bharat 2026 • Jawaharlal Nehru Stadium, Pragati Vihar, New Delhi, Delhi 110003
                     </p>
                 </motion.div>
             </div>

@@ -212,11 +212,28 @@ input:focus, textarea:focus {
     padding: 0 var(--space-3);
   }
 }
+/* Homepage Modal & Hero Classes */
+.modal-header { padding: 2rem 2.5rem; }
+.modal-body { padding: 2.5rem; gap: 2rem; }
+.schedule-row { display: grid; grid-template-columns: minmax(120px, 1fr) 3fr; padding: 1.25rem 1.5rem; }
 
+.modal-container { border-radius: 32px; }
 
+@media (max-width: 768px) {
+  .hero-section { min-height: auto; padding-bottom: calc(var(--space-5) * 3) !important; padding-top: calc(var(--space-5) * 2) !important; }
+  .about-grid-container { grid-template-columns: 1fr !important; gap: var(--space-5) !important; }
+  .modal-header { padding: 1.5rem 1.5rem; }
+  .modal-body { padding: 1.5rem; gap: 1.5rem; }
+  .schedule-row { grid-template-columns: 1fr; gap: 0.5rem !important; padding: 1rem 1.25rem !important; }
+  
+  .hero-buttons-wrapper { flex-direction: column; width: 100%; padding: 0 1rem; }
+  .hero-buttons-wrapper a { width: 100%; }
+  .hero-buttons-wrapper button { width: 100%; justify-content: center; }
+  
+    .modal-container { border-radius: 20px; }
+}
 
-
-
-
-
-
+@media (min-width: 769px) {
+  .hero-section { min-height: calc(100vh - var(--nav-height)); }
+  .about-grid-container { grid-template-columns: 1.2fr 0.8fr; gap: calc(var(--space-5) * 1.5); }
+}
